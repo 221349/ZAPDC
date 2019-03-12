@@ -5,10 +5,27 @@ clear;
 
 IMG = imread('dummy-reversal-featured.jpg');
 %image(IMG)
-imwrite(bilinear(IMG,900,900), 'u1.png')
+
+%Resolution:
+XR = 900;
+YR = 900;
+
+for i = 1:5
+    tic;
+    nearest(IMG,XR,YR);
+    n_t(i) = toc;
+    tic;
+    bilinear(IMG,XR,YR);
+    b_t(i) = toc;
+end
+nearest_time = mean(n_t)
+bilinear_time = mean(b_t)
+
 imwrite(nearest(IMG,900,900), 'u2.png')
+imwrite(bilinear(IMG,900,900), 'u1.png')
 
 
+%%Functions:
 
 function out = nearest(in,Xr,Yr)
     Xo = length(in(1,:,1));
@@ -25,7 +42,6 @@ function out = bilinear(in,Xr,Yr)
     Yo = length(in(:,1,1)) -1;
     for yP = 1:Yr
         for xP = 1:Xr
-            %out(y,x,:) = in(round(y * Yo / Yr) , round(x * Xo / Xr) , :);
             y = yP * Yo / Yr;
             x = xP * Xo / Xr;
             y1 = round(y);
