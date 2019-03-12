@@ -1,0 +1,96 @@
+\documentclass{article}
+\usepackage{a4wide}
+
+
+\usepackage{polski}
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{animate}
+
+\usepackage{color} %red, green, blue, yellow, cyan, magenta, black, white
+\definecolor{mygreen}{RGB}{28,172,0} % color values Red, Green, Blue
+\definecolor{taupe}{rgb}{0.28, 0.24, 0.2}
+\definecolor{mylilas}{RGB}{0,110,0}
+
+
+\author{Lev Sergeyev}
+\title{ZAPDC. Ćwiczenie 1. Aliasing 2D}
+
+\date{2019.03.06}
+\begin{document}
+
+\maketitle
+
+%\pagebreakmovie15
+
+\section{Przebieg ćwiczenia}
+
+
+\begin{figure}[h]
+\centering
+%\includemovie{3cm}{3cm}{A.gif}
+\animategraphics{0.2}{A-}{0}{59}
+\caption{Schemat symulacji obiektu K(s) w Simulink}
+\end{figure}
+
+
+\par
+Dany jest obiekt o transmitancji:
+\begin{equation}
+K(s)=\frac{1}{s^2+as+b} 
+\end{equation}
+\par
+Dobierając parametry a, b można uzyskać róźne bieguny, które można podzielić na bieguny stabilne,  niestabilne i bieguny na granicy stabilności. Dodatkowo trzy wyżej wymienione rodzaje można podzielić na rzeczywiste i zespolone, które wprowadzają oscylacje do odpowiedzi.
+Dobierając parametry a i b otzrymałem 6 róźnych par biegónów: 
+\begin{itemize}  
+	\item rzeczywiste:
+	\begin{itemize}  
+		\item wszystkie ujemne (a=3, b=2)
+		\item przynajmniej jeden zerowy (a=1, b=0)
+		\item przynajmniej jeden dodatni (a=0, b=-4)
+	\end{itemize}
+	\item zespolone:
+	\begin{itemize}  
+		\item wszystkie ujemne (a=0.5, b=1.05)
+		\item część rzeczywista jest zero (a=0, b=1)
+		\item dodatnie (a=-0.5, b=1.05)
+	\end{itemize}
+\end{itemize}
+Korzystając z śródowiska Simulink przeprowadziłem symulację odpowiedzi skokowych używając schematu na Rys. 1
+
+
+
+\pagebreak
+\section{Kod źródłowy}
+
+
+
+%\lstset{basicstyle=\small}
+
+
+\lstset{language=Matlab,%
+    %basicstyle=\color{red},
+    breaklines=true,%
+    morekeywords={matlab2tikz},
+    keywordstyle=\color{blue},%
+    morekeywords=[2]{1}, keywordstyle=[2]{\color{black}},
+    identifierstyle=\color{black},%
+    stringstyle=\color{mylilas},
+    commentstyle=\color{mygreen},%
+    showstringspaces=false,%without this there will be a symbol in the places where there is a space
+    numbers=left,%
+    numberstyle={\tiny \color{taupe}},% size of the numbers
+    numbersep=9pt, % this defines how far the numbers are from the text
+    emph=[1]{for,end,break},emphstyle=[1]\color{red}, %some words to emphasise
+    %emph=[2]{word1,word2}, emphstyle=[2]{style},    
+}
+
+\UseRawInputEncoding
+\lstinputlisting{../lab1.m}
+
+\end{document}

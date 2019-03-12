@@ -1,0 +1,19 @@
+close all;
+clear;
+
+
+
+IMG = imread('dummy-reversal-featured.jpg');
+%image(IMG)
+image(nearest(IMG,1,1))
+
+
+function out = nearest(in,Xr,Yr)
+    Xo = length(in(1,:,1));
+    Yo = length(in(:,1,1));
+    for y = 1:Yr
+        for x = 1:Xr
+            
+        end
+        
+end

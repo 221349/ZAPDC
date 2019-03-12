@@ -1,0 +1,90 @@
+\documentclass{article}
+\usepackage{a4wide}
+
+
+\usepackage{polski}
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{movie15}
+
+\usepackage{color} %red, green, blue, yellow, cyan, magenta, black, white
+\definecolor{mygreen}{RGB}{28,172,0} % color values Red, Green, Blue
+\definecolor{taupe}{rgb}{0.28, 0.24, 0.2}
+\definecolor{mylilas}{RGB}{0,110,0}
+
+
+\author{Lev Sergeyev}
+\title{ZAPDC. Ćwiczenie 1. Aliasing 2D}
+
+\date{2019.03.06}
+\begin{document}
+
+\maketitle
+
+%\pagebreakmovie15
+
+\section{Przebieg ćwiczenia}
+Za pomocą śródowiska Matlab wygenerowałem animację składającą się z 60 klatek która przedstawia obracające się śmigło (Rys 1).
+/par do generacji obrazu animacji służą następujące zmienne
+\begin{itemize}  
+		\item Xr i Yr: rozdzielczość obrazu
+		\item F\_N: ilość klatek
+		\item propeller: ilość ramion śmigła
+\end{itemize}
+
+\begin{figure}[h]
+\centering
+\includemovie{3cm}{3cm}{F.gif}
+\caption{Animacja: obracające śmigło obraz oryginalny (rzeczywisty)}
+\end{figure}
+
+Następnie przetworzyłem otrzymaną animację w taki sposób, aby symulować odczytywanie obrazu sensorem kamery cyfrowej: każda klatka dzieli się na \( VS \) odcinków pionowych w które są zapisywane odpowiednie odcinki odcinki z opóźnieniem. W taki sposób otrzymałem animację (Rys. 2) o częstotliwości \(f = VS / F_N \), np jeżeli częstotliwość animacji pierwotnej jest \(60 \) Hz, to częstotliwość po przetwarzaniu jest \(60 / VS \) Hz.
+
+\begin{figure}[h]
+\centering
+\includemovie{3cm}{3cm}{A.gif}
+\caption{Animacja: obraz pobrany z matrycy}
+\end{figure}
+
+Wygenerowane animacje (F.gif i A.gif) są z uwzględnieniem proporcji czasowej, w taki sposób aby chwila trwania jednej klatki w A.gif odpowiadała \( VS \) klatkom w F.gif
+
+\section{Wnioski}
+\par
+Takie zniekształcenia są skutkiem opóźnienia odczytu poszczególnych pół sensoru. Aby uniknąć takie zniekształcenia należało by odczytywać wszystkie piksele na raz, podnieść częstotliwość odczytu, albo wpowadzić post processing(np całkowanie, co swoją drogą też może wprowadzić pewne zniekształcenia w postaci śladów na obrazie statycznym). W niektórych sensorach i algorytmach kodowania sygnałó rownież stosowany był odczyt obrazu co drugi wiersz, co również powodowało powstanie pasków poziomy w nagraniach.
+
+
+
+%\pagebreak
+\section{Kod źródłowy}
+
+
+
+%\lstset{basicstyle=\small}
+
+
+\lstset{language=Matlab,%
+    %basicstyle=\color{red},
+    breaklines=true,%
+    morekeywords={matlab2tikz},
+    keywordstyle=\color{blue},%
+    morekeywords=[2]{1}, keywordstyle=[2]{\color{black}},
+    identifierstyle=\color{black},%
+    stringstyle=\color{mylilas},
+    commentstyle=\color{mygreen},%
+    showstringspaces=false,%without this there will be a symbol in the places where there is a space
+    numbers=left,%
+    numberstyle={\tiny \color{taupe}},% size of the numbers
+    numbersep=9pt, % this defines how far the numbers are from the text
+    emph=[1]{for,end,break},emphstyle=[1]\color{red}, %some words to emphasise
+    %emph=[2]{word1,word2}, emphstyle=[2]{style},    
+}
+
+\UseRawInputEncoding
+\lstinputlisting{lab1.m}
+
+\end{document}
