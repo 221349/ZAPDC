@@ -1,27 +1,39 @@
 close all;
 clear;
 
-IMG = imread('dummy-reversal-featured.png');
+IMG = imread('jab_s.png');
 %image(IMG)
 
 %Resolution:
-XR = 220;
-YR = 220;
+XR = 350;
+YR = 300;
+
+vector = [-XR / length(IMG(1,:,1)); YR/length(IMG(:,1,1)) ];
+
+%imwrite(v_nearest(IMG, vector, 0), 'v_nearest_1.png')
 
 
-imwrite(v_bilinear(IMG, [-1.3, 1.5], 15), 'c1.png')
-
-% 
-% for i = 1:0
+for i = 1:5
 %     tic;
 %     nearest(IMG,XR,YR);
 %     n_t(i) = toc;
 %     tic;
 %     bilinear(IMG,XR,YR);
 %     b_t(i) = toc;
-% end
+    
+    
+    tic;
+    v_nearest(IMG, vector, 132);
+    vn_t(i) = toc;
+    tic;
+    v_bilinear(IMG, vector, 132);
+    vb_t(i) = toc;
+ end
+% 
 % nearest_time = mean(n_t)
 % bilinear_time = mean(b_t)
+v_nearest_time = mean(vn_t)
+v_bilinear_time = mean(vb_t)
 
 %image(nearest(IMG,XR,YR))
 %imwrite(nearest(IMG,XR,YR), 'c1.png')
@@ -110,11 +122,11 @@ function out = v_bilinear(in, vector, theta)
     for y = 1:size_y
         for x = 1:size_x
             pos = r_transform([x + offset_x, y + offset_y] , vector, theta) +1;
-            
-            if check_location(pos, Xo, Yo)
-                y1 = fix(pos(2));
+            pos_fixed = fix(pos);
+            if check_location_ext(pos_fixed, Xo, Yo)
+                y1 = pos_fixed(2);
                 y2 = y1 + 1;
-                x1 = fix(pos(1));
+                x1 = pos_fixed(1);
                 x2 = x1 + 1;
             
                 X = [(x2 - pos(1)), (pos(1) - x1)];
@@ -149,6 +161,20 @@ function out = check_location(vector_in, Xo, Yo)
     elseif(vector_in(2) < 1)
         out = false;
     elseif(vector_in(2) > Yo)
+        out = false;
+    else
+        out = true;
+    end
+end
+
+function out = check_location_ext(vector_in, Xo, Yo)
+    if(vector_in(1) < 1) 
+        out = false;
+    elseif(vector_in(1) +1 > Xo)
+        out = false;
+    elseif(vector_in(2) < 1)
+        out = false;
+    elseif(vector_in(2) +1 > Yo)
         out = false;
     else
         out = true;
