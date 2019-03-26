@@ -1,13 +1,13 @@
 close all;
 clear;
 
-IMG = imread('jab_s.png');
+IMG = imread('pixels.png');
 %image(IMG)
 
 %Resolution:
 
-XR = 2 * length(IMG(1,:,1));
-YR = 2 * length(IMG(:,1,1));
+XR = 16 * length(IMG(1,:,1));
+YR = 16 * length(IMG(:,1,1));
 
 vector = [XR / length(IMG(1,:,1)); YR/length(IMG(:,1,1)) ];
 
@@ -33,11 +33,11 @@ vector = [XR / length(IMG(1,:,1)); YR/length(IMG(:,1,1)) ];
 % v_nearest_time = mean(vn_t)
 % v_bilinear_time = mean(vb_t)
 
-% % %image(nearest(IMG,XR,YR))
-% imwrite(nearest(IMG,XR,YR), 'jab_nearest_s.png')
-% imwrite(bilinear(IMG,XR,YR), 'jab_bilinear_s.png')
-%imwrite(v_nearest(IMG, vector, 20), 'jab_v_nearest_r.png')
-%imwrite(v_bilinear(IMG, vector, 20), 'jab_v_bilinear_r.png')
+% %image(nearest(IMG,XR,YR))
+imwrite(nearest(IMG,XR,YR), 'pixels_nearest_s.png')
+imwrite(bilinear(IMG,XR,YR), 'pixels_bilinear_s.png')
+imwrite(v_nearest(IMG, vector, 50), 'pixels_v_nearest_r.png')
+imwrite(v_bilinear(IMG, vector, 50), 'pixels_v_bilinear_r.png')
 
 
 
@@ -58,8 +58,8 @@ function out = bilinear(in,Xr,Yr)
     Yo = length(in(:,1,1));
     for yP = 1:Yr
         for xP = 1:Xr
-            y = yP * Yo / Yr;
-            x = xP * Xo / Xr;
+            y = yP * Yo / Yr + 0.5;
+            x = xP * Xo / Xr + 0.5;
             y1 = fix(y);
             y2 = y1 + 1;
             x1 = fix(x);
@@ -112,7 +112,7 @@ function out = v_bilinear(in, vector, theta)
     
     for y = 1:size_y
         for x = 1:size_x
-            pos = r_transform([x + offset_x, y + offset_y] , vector, theta);
+            pos = r_transform([x + offset_x, y + offset_y] , vector, theta) + 0.5;
             pos_fixed = fix(pos);
             y1 = pos_fixed(2);
             y2 = y1 + 1;
@@ -143,7 +143,7 @@ end
 function out = get_pixel(IMG, vector_in)
     Xo = length(IMG(1,:,1));
     Yo = length(IMG(:,1,1));
-    vector_in = round(vector_in);
+    vector_in = ceil(vector_in);
     if(vector_in(1) < 1) | (vector_in(1) > Xo) | (vector_in(2) < 1) | (vector_in(2) > Yo)
         out(1,1,:) = uint8([255 255 255]);
     else
