@@ -1,45 +1,47 @@
 close all;
 clear;
 
-IMG = imread('pixels.png');
+IMG = imread('jab.jpg');
 %image(IMG)
 
 %Resolution:
 
-XR = 16 * length(IMG(1,:,1));
-YR = 16 * length(IMG(:,1,1));
+XR = (1) * length(IMG(1,:,1));
+YR = (1) * length(IMG(:,1,1));
 
-vector = [XR / length(IMG(1,:,1)); YR/length(IMG(:,1,1)) ];
-
+vector = [-XR / length(IMG(1,:,1)); YR/length(IMG(:,1,1)) ];
+% 
+% % Time test
 % for i = 1:5
 %     tic;
 %     nearest(IMG,XR,YR);
-%     n_t(i) = toc;
+%     n_t(i) = toc
 %     tic;
 %     bilinear(IMG,XR,YR);
-%     b_t(i) = toc;
-    
+%     b_t(i) = toc
+%     
 %     
 %     tic;
 %     v_nearest(IMG, vector, 132);
-%     vn_t(i) = toc;
+%     vn_t(i) = toc
 %     tic;
 %     v_bilinear(IMG, vector, 132);
-%     vb_t(i) = toc;
+%     vb_t(i) = toc
 %  end
 % 
 % nearest_time = mean(n_t)
-% % bilinear_time = mean(b_t)
+% bilinear_time = mean(b_t)
 % v_nearest_time = mean(vn_t)
 % v_bilinear_time = mean(vb_t)
+% 
+% % Write interpolation results:
+% imwrite(nearest(IMG,XR,YR), 'jab_nearest_s.png')
+% imwrite(bilinear(IMG,XR,YR), 'jab_bilinear_s.png')
+% imwrite(v_nearest(IMG, vector, 1), 'jab_v_nearest_r.png')
+% imwrite(v_bilinear(IMG, vector, 1), 'jab_v_bilinear_r.png')
 
-% %image(nearest(IMG,XR,YR))
-imwrite(nearest(IMG,XR,YR), 'pixels_nearest_s.png')
-imwrite(bilinear(IMG,XR,YR), 'pixels_bilinear_s.png')
-imwrite(v_nearest(IMG, vector, 50), 'pixels_v_nearest_r.png')
-imwrite(v_bilinear(IMG, vector, 50), 'pixels_v_bilinear_r.png')
 
-
+imwrite(v_bilinear(IMG, vector, -28), 'jab_mirror_v_bilinear_r.png')
 
 %% Main Functions:
 
@@ -145,6 +147,7 @@ function out = get_pixel(IMG, vector_in)
     Yo = length(IMG(:,1,1));
     vector_in = ceil(vector_in);
     if(vector_in(1) < 1) | (vector_in(1) > Xo) | (vector_in(2) < 1) | (vector_in(2) > Yo)
+        % Background col:
         out(1,1,:) = uint8([255 255 255]);
     else
         out = IMG(vector_in(2), vector_in(1), :);
