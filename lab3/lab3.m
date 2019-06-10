@@ -1,13 +1,15 @@
 close all;
 clear;
 
-IMG = imread('jab.jpg');
+IMG = imread('pixels.png');
 %image(IMG)
 
 %Resolution:
 
-XR = (1) * length(IMG(1,:,1));
-YR = (1) * length(IMG(:,1,1));
+
+
+XR = (4) * length(IMG(1,:,1));
+YR = (3) * length(IMG(:,1,1));
 
 vector = [-XR / length(IMG(1,:,1)); YR/length(IMG(:,1,1)) ];
 % 
@@ -36,12 +38,12 @@ vector = [-XR / length(IMG(1,:,1)); YR/length(IMG(:,1,1)) ];
 % 
 % % Write interpolation results:
 % imwrite(nearest(IMG,XR,YR), 'jab_nearest_s.png')
-% imwrite(bilinear(IMG,XR,YR), 'jab_bilinear_s.png')
+% imwrite(bilinear(IMG,XR,YR), 'jab_bilinear_s.png')n
 % imwrite(v_nearest(IMG, vector, 1), 'jab_v_nearest_r.png')
 % imwrite(v_bilinear(IMG, vector, 1), 'jab_v_bilinear_r.png')
 
 
-imwrite(v_bilinear(IMG, vector, -28), 'jab_mirror_v_bilinear_r.png')
+imwrite(bicubic(IMG,XR,YR), 'outn.png')
 
 %% Main Functions:
 
@@ -77,6 +79,99 @@ function out = bilinear(in,Xr,Yr)
     end
 end
 
+function out = bicubic(in,Xr,Yr)
+L = [
+    1, 0, 0, 0;
+    1, 1, 1, 1;
+    0, 1, 0, 0;
+    0, 1, 2, 3;
+];
+R = transpose(L);
+
+Lo = [
+    1,  0,  0,  0;
+    0,  0,  1,  0;
+    -3, 3,  -2, -1;
+    2,  -2, 1,  1;
+]
+Ro = transpose(Lo)
+
+    Xo = length(in(1,:,1));
+    Yo = length(in(:,1,1));
+    for yP = 1:Yr
+        for xP = 1:Xr
+            y = yP * Yo / Yr + 0.5;
+            x = xP * Xo / Xr + 0.5;
+            F = get_F(in, x, y);
+            x = x - fix(x);
+            y = y - fix(y);
+            X = [1, x, x^2, x^3];
+            Y = [1; y; y^2; y^3];
+            for d = 1:3
+                A(:,:,d) = (Lo * double(F(:,:,d))) * Ro;
+                %o = uint8(X * A(:,:,d) * Y)
+                out(yP,xP,d) =  uint8((X * A(:,:,d)) * Y);
+            end
+        end
+    end
+end
+
+
+function out = get_F(in, x, y)
+    y0 = fix(y);
+    y1 = y0 + 1;
+    x0 = fix(x);
+    x1 = x0 + 1;
+    f00 = get_pixel(in, [x0, y0]);
+    f01 = get_pixel(in, [x0, y1]);
+    f10 = get_pixel(in, [x1, y0]);
+    f11 = get_pixel(in, [x1, y1]);
+    out = [
+        f00, f01, f00, f01;
+        f10, f11, f10, f11;
+        f00, f01, f00, f01;
+        f10, f11, f10, f11;
+    ];
+end
+
+function out = bicubicK(in,Xr,Yr)
+Lo = [
+    0,  2,  0,  0;
+    -1, 0,  1,  0;
+    2,  -5, 4, -1;
+    -1, 3,  -3, 1;
+]
+Ro = transpose(Lo)
+
+    Xo = length(in(1,:,1));
+    Yo = length(in(:,1,1));
+    for yP = 1:Yr
+        for xP = 1:Xr
+            y = yP * Yo / Yr + 0.5;
+            x = xP * Xo / Xr + 0.5;
+            F = get_Fk(in, x, y);
+            x = x - fix(x);
+            y = y - fix(y);
+            X = [1, x, x^2, x^3];
+            Y = [1; y; y^2; y^3];
+            for d = 1:3
+                A(:,:,d) = (Lo * double(F(:,:,d))) * Ro;
+                %o = uint8(X * A(:,:,d) * Y)
+                out(yP,xP,d) =  uint8(((X * A(:,:,d)) * Y) * 0.25);
+            end
+        end
+    end
+end
+
+function out = get_Fk(in, x, y)
+    y0 = fix(y) - 1;
+    x0 = fix(x) - 1;
+    for xP = 0:3
+        for yP = 0:3
+            out(xP+1,yP+1,:) = get_pixel(in, [x0 + xP, y0 + yP]);
+        end
+    end
+end
 
 
 function out = v_nearest(in, vector, theta)
