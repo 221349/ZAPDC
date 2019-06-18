@@ -43,20 +43,20 @@ Za pomocą śródowiska Matlab zaprojektowałem 6 funkcji które pozwalają na z
 \section{Czas działania}
 Dla jednego obrazu przeprowadzono 6 serii interpolacji dla każdej z 6 funkcji. Zmierzono czas działania funkcji. Następnie z otrzymanych wyników została wyliczona średnia. Czas podany w sekundach.
 \begin{center}
-    \begin{tabular}{ | c | c | c |}
+    \begin{tabular}{ | c | c | c | c |}
     \hline
-    Funkcja &  zmiana rozdzielczości & zmiana rozd. + obrót \\ \hline
+    Funkcja &  Skalowanie & Skalowanie + obrót  & Złożoność \\ \hline
 
-     nearest  & 0.5847 & 2.5189
+     nearest  & 0.5847 & 2.5189 & \( O( (n^2) ^2 ) \)
     \\ \hline
 
 
-     bilinear  & 3.4955 & 9.1013
+     bilinear  & 3.4955 & 9.1013 & \( O( (n^2) ^4 ) \)
     \\ \hline
     
     
     
-     keys & 11.6204 & 27.9314
+     keys & 11.6204 & 27.9314 & \( O( (n^2) ^6 ) \)
     \\ \hline
 
     \end{tabular}
@@ -97,7 +97,7 @@ Zmiana rozmiaru: \\
 
 \subsection{Jabłko}
 Wektorowe funkcje interpolujące: \\
-\(Lx = 2.5 Lx_0\) \\
+\(Lx = -2.5 Lx_0\) \\
 \(Ly = 1.5 Ly_0\) \\
 \( \Phi_{rot} = -10^\circ \)  \\
 \begin{center}
@@ -163,5 +163,16 @@ Wektorowe funkcje interpolujące: \\
 \end{center}
 
 \section{Wnioski}
+\par
+Porównując skalowane obrazy można dojść do wniosku, że największa dokładność należy do interpolacji funkcją prostokątną | metoda "najbliższego sąsiada". Dodatkowo, przez mniejszą złożoność obliczeniową, metoda "najbliższego sąsiada" jest najszybszym algorytmem do skalowania. 
+\par
+Funkcje liniowej interpolacji i Keys'a pozwalają otrzymać znacznie bardziej naturalny dla człowieka obraz po skalowaniu. Dokładne porównać te dwie funkcje można za pomocą skalowania obrazu "piksele": w wyniku skalowania interpolacją dwuliniową można zauważyć "liniowość" przejść w odróżnieniu od płynnych przejść (krzywą funkcji sześciennej) interpolacji Keys'a.\\
+\par
+Interpolacja funkcją Keysa może dać jakościowo najlepszy wynik, ale potrzebuje znacznie więcej czasu, który będzie wynosił \( {t_{nearest}}^3\) lub \({t_{bucubic}}^2\).
+\par
+Wadą interpolacji liniowej i Keys'a można nazwać rozmycia które mogą powstać na granicach objektów na obrazie po skalowaniu w górę.
+Wadą interplolacji funkcją prostokątną można nazwać zjawisko aliasingu(widoczne na "siatka") po skalowaniu w dół.
+\par
+Często można zauważyć w aplikacjach do pracy z grafiką rastrową, że interpolacja najbliższym sąsiadem jest wykorzystywana dla szybkiego podglądu wyniku operacji skalowania, która następnie wykonywana jest bardziej złożonym algorytmem.
 
 \end{document}
