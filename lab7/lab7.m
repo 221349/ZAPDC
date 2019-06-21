@@ -6,18 +6,34 @@ clear;
 fil = [1, 2, 1; 2, 4, 2; 1, 2, 1] / 16;
 
 fil = [1/2,0,0; 0, 0, 0; 0, 0, 1/2];
-IMG = imread('/home/lev/ZAPDC/lab3/r_wave.png');
+%IMG = imread('/home/lev/ZAPDC/lab3/r_wave.png');
+IMG = imread('Leopard-with-noise.jpg');
 
 
 %sum(sum(double(get_square_piece(IMG, [3, 3], 1)).*fil))
 
 
 %image(splot_filter(IMG, fil))
-imwrite(splot_filter(IMG, gauss_filter(5)), '/tmp/l.png')
+%imwrite(splot_filter(IMG, gauss_filter(5)), 'l.png')
+imwrite(median_filter(IMG, 3), 'l3.png')
+
+function out = median_filter(IMG, radius)
+    l = (radius * 2 + 1)^2;
+    for y = 1:length(IMG(:,1,1))
+        y
+        for x = 1:length(IMG(1,:,1))
+            tmp = get_square_piece(IMG, [x, y], radius);
+            for i = 1:3
+                map = tmp(:,:,i);
+                sorted = sort(map(:));
+                out(y,x,i) = sorted(ceil(l/2));
+            end
+        end
+    end
+end 
 
 function out = splot_filter(IMG, fil)
     R = (length(fil(1,:)) - 1) / 2 ;
-    length(IMG(:,1,1))
     for y = 1:length(IMG(:,1,1))
         y
         for x = 1:length(IMG(1,:,1))
