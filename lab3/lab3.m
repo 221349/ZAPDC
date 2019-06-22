@@ -8,19 +8,32 @@ IMG = imread('jab_s.png');
 
 
 
-XR = (4) * length(IMG(1,:,1));
-YR = (3) * length(IMG(:,1,1));
+XR = (2.5) * length(IMG(1,:,1));
+YR = (1.5) * length(IMG(:,1,1));
 
 vector = [-XR / length(IMG(1,:,1)); YR/length(IMG(:,1,1)) ];
+
+
+% imwrite(nearest(IMG,XR,YR), 'pixels_n.png')
+% imwrite(bilinear(IMG,XR,YR), 'pixels_b.png')
+% imwrite(keys(IMG,XR,YR), 'pixels_k.png')
+
+imwrite(v_nearest(IMG, vector, -10), 'jab_n.png')
+imwrite(v_bilinear(IMG, vector, -10), 'jab_b.png')
+imwrite(v_keys(IMG, vector, -10), 'jab_k.png')
+
 % 
-% % Time test
-% for i = 1:5
+%% Time test
+% for i = 1:6
 %     tic;
 %     nearest(IMG,XR,YR);
 %     n_t(i) = toc
 %     tic;
 %     bilinear(IMG,XR,YR);
 %     b_t(i) = toc
+%     tic;
+%     keys(IMG,XR,YR);
+%     k_t(i) = toc
 %     
 %     
 %     tic;
@@ -29,20 +42,25 @@ vector = [-XR / length(IMG(1,:,1)); YR/length(IMG(:,1,1)) ];
 %     tic;
 %     v_bilinear(IMG, vector, 132);
 %     vb_t(i) = toc
+%     tic;
+%     v_keys(IMG, vector, 132);
+%     vk_t(i) = toc
 %  end
 % 
 % nearest_time = mean(n_t)
 % bilinear_time = mean(b_t)
+% keys_time = mean(k_t)
 % v_nearest_time = mean(vn_t)
 % v_bilinear_time = mean(vb_t)
-% 
-% % Write interpolation results:
+% v_keys_time = mean(vk_t)
+
+%% Write interpolation results:
 % imwrite(nearest(IMG,XR,YR), 'jab_nearest_s.png')
 % imwrite(bilinear(IMG,XR,YR), 'jab_bilinear_s.png')n
 % imwrite(v_nearest(IMG, vector, 1), 'jab_v_nearest_r.png')
 % imwrite(v_bilinear(IMG, vector, 1), 'jab_v_bilinear_r.png')
 
-imwrite(v_keys(IMG, vector, 210), 'outks.png')
+%imwrite(v_keys(IMG, vector, 210), 'outks.png')
 
 %% Main Functions:
 
@@ -84,8 +102,8 @@ Lo = [
     -1, 0,  1,  0;
     2,  -5, 4, -1;
     -1, 3,  -3, 1;
-]
-Ro = transpose(Lo)
+];
+Ro = transpose(Lo);
 
     Xo = length(in(1,:,1));
     Yo = length(in(:,1,1));
@@ -175,8 +193,8 @@ Lo = [
     -1, 0,  1,  0;
     2,  -5, 4, -1;
     -1, 3,  -3, 1;
-]
-Ro = transpose(Lo)
+];
+Ro = transpose(Lo);
 
     Xo = length(in(1,:,1));
     Yo = length(in(:,1,1));
