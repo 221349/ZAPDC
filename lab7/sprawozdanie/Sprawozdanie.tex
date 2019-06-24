@@ -1,0 +1,73 @@
+\documentclass{article}
+\usepackage{a4wide}
+
+
+\usepackage{polski}
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage[margin=1in]{geometry}
+
+\author{Lev Sergeyev}
+\title{ZAPDC \\ Ćwiczenie 4 \\ Algorytmy wygładzania I}
+
+\date{ }
+\begin{document}
+
+\maketitle
+
+%\pagebreakmovie15
+
+\section{Przebieg ćwiczenia}
+3 funkcję filtrujące:
+\begin{itemize} 
+	\item filtr splotowy, z paramertami:
+	\begin{itemize} 
+		\item kształt f-cji jądra (użyta funkcja Gaussa)
+		\item długość f-cji jądra
+	\end{itemize}
+	\item filtr medianowy
+	\begin{itemize} 
+		\item rozmiar okna
+	\end{itemize}
+	\item filtr bilateralny:
+	\begin{itemize} 
+		\item długość f-cji jądra (użyta funkcja Gaussa)
+	\end{itemize}
+\end{itemize}
+
+\section{Porównywanie filtrów}
+
+\subsection{Filtr Bilateralny}
+\begin{center}
+    \begin{tabular}{ | c | c | c |}
+    \hline
+    Parametry jądra & Błąd &  Obraz \\ \hline
+    
+    \smallskip kształt: funkcja Gaussa, rozmiar: 40 & &
+    \raisebox{-\totalheight}{\scalebox{0.2}{\includegraphics{img/b40.png}}}
+     \\ \hline
+
+    \smallskip kształt: funkcja Gaussa, rozmiar: 100 & &
+    \raisebox{-\totalheight}{\scalebox{0.2}{\includegraphics{img/b100.png}}} 
+    \\ \hline
+    \end{tabular}
+\end{center}
+
+\pagebreak
+
+
+\subsection{Kod}
+\href{https://github.com/221349/ZAPDC/tree/master/lab7}{https://github.com/221349/ZAPDC/tree/master/lab7}
+
+\section{Wnioski}
+\par
+
+
+
+\end{document}

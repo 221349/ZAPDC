@@ -2,11 +2,6 @@ close all;
 clear;
 
 
-
-fil = [1, 2, 1; 2, 4, 2; 1, 2, 1] / 16;
-
-fil = [1/2,0,0; 0, 0, 0; 0, 0, 1/2];
-%IMG = imread('/home/lev/ZAPDC/lab3/r_wave.png');
 IMG = imread('Leopard-with-noise.jpg');
 
 
@@ -14,8 +9,45 @@ IMG = imread('Leopard-with-noise.jpg');
 
 
 %image(splot_filter(IMG, fil))
-%imwrite(splot_filter(IMG, gauss_filter(5)), 'l.png')
-imwrite(median_filter(IMG, 3), 'l3.png')
+imwrite(splot_filter(IMG, gauss_filter(1)), 'sprawozdanie/img/g3.png')
+imwrite(splot_filter(IMG, gauss_filter(3)), 'sprawozdanie/img/b7.png')
+imwrite(median_filter(IMG, 1), 'sprawozdanie/img/m3.png')
+imwrite(median_filter(IMG, 3), 'sprawozdanie/img/b7.png')
+
+imwrite(bilateral_filter(IMG, 40), 'sprawozdanie/img/b40.png')
+imwrite(bilateral_filter(IMG, 100), 'sprawozdanie/img/b100.png')
+
+%% Functions:
+
+
+function out = bilateral_filter(IMG, fr)
+    %X=double(XR);
+    IMG=double(IMG);
+    bis=7;
+    bis_t=(bis-1)/2;
+    bis_tt=bis_t+1;
+    gs=4;
+    
+    y_length = length(IMG(:, 1, 1));
+    x_length = length(IMG(1, :, 1))
+    for i=1:bis
+        for j=1:bis
+            range_matrix(i,j)= sqrt((bis_tt-i)^2+(bis_tt-j)^2);
+        end
+    end
+
+    for c=1:3
+        for i=bis_tt:1:(y_length - bis_tt)
+            i
+            for j=bis_tt:1:(x_length - bis_tt)
+                light_matrix=IMG(i-bis_t:i+bis_t, j-bis_t:j+bis_t, c);
+                common=gaussmf(abs(light_matrix-IMG(i,j,c)),[fr 0]).*gaussmf(range_matrix,[gs 0]);
+                out(i-bis_t,j-bis_t,c)=uint8(sum(sum(light_matrix.*common))/sum(sum(common)));
+            end
+        end
+    end
+end 
+
 
 function out = median_filter(IMG, radius)
     l = (radius * 2 + 1)^2;
@@ -40,8 +72,9 @@ function out = splot_filter(IMG, fil)
             out(y,x,:) = uint8( sum(sum( double(get_square_piece(IMG, [x, y], R)).*fil)) );
         end
     end
-end    
-    
+end  
+
+%% Helpers:
 
 function out = get_square_piece(IMG, vector_in, radius)
     pos = vector_in - radius - 1;
