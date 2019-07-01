@@ -29,7 +29,7 @@
 	\item filtr splotowy, z paramertami:
 	\begin{itemize} 
 		\item kształt f-cji jądra (użyta funkcja Gaussa)
-		\item długość f-cji jądra
+		\item długość f-cji jądra \(g_s \)
 	\end{itemize}
 	\item filtr medianowy
 	\begin{itemize} 
@@ -37,11 +37,50 @@
 	\end{itemize}
 	\item filtr bilateralny:
 	\begin{itemize} 
-		\item długość f-cji jądra (użyta funkcja Gaussa)
+		\item długość f-cji jądra (użyta funkcja Gaussa) \(g_s \)
+		\item tolerancja różnic funkcji wygłądzającej (użyta funkcja Gaussa) \(f_s \)
 	\end{itemize}
 \end{itemize}
 
 \section{Porównywanie filtrów}
+
+
+\subsection{Filtr Splotowy}
+\begin{center}
+    \begin{tabular}{ | c | c | c |}
+    \hline
+    Parametry jądra & Błąd &  Obraz \\ \hline
+    
+    \smallskip kształt: funkcja Gaussa, \(g_s = 3\) & 37.57 &
+    \raisebox{-\totalheight}{\scalebox{0.2}{\includegraphics{img/s5.png}}}
+    
+     \\ \hline
+	
+    \smallskip kształt: funkcja Gaussa,\(g_s = 4\) & 35.82 &
+    \raisebox{-\totalheight}{\scalebox{0.2}{\includegraphics{img/s7.png}}} 
+    
+    \\ \hline
+    \end{tabular}
+\end{center}
+
+
+\subsection{Filtr Medianowy}
+\begin{center}
+    \begin{tabular}{ | c | c | c |}
+    \hline
+    Rozmiar okna & Błąd &  Obraz \\ \hline
+    
+    5x5 & 37.06 &
+    \raisebox{-\totalheight}{\scalebox{0.2}{\includegraphics{img/m5.png}}}
+    
+     \\ \hline
+	
+    7x7 & 34.43 &
+    \raisebox{-\totalheight}{\scalebox{0.2}{\includegraphics{img/m7.png}}} 
+    
+    \\ \hline
+    \end{tabular}
+\end{center}
 
 \subsection{Filtr Bilateralny}
 \begin{center}
@@ -49,12 +88,14 @@
     \hline
     Parametry jądra & Błąd &  Obraz \\ \hline
     
-    \smallskip kształt: funkcja Gaussa, rozmiar: 40 & &
-    \raisebox{-\totalheight}{\scalebox{0.2}{\includegraphics{img/b40.png}}}
+    \smallskip kształt: funkcja Gaussa, \( f_r = 50, g_s = 3\) & 40.65 &
+    \raisebox{-\totalheight}{\scalebox{0.2}{\includegraphics{img/b5.png}}}
+    
      \\ \hline
-
-    \smallskip kształt: funkcja Gaussa, rozmiar: 100 & &
-    \raisebox{-\totalheight}{\scalebox{0.2}{\includegraphics{img/b100.png}}} 
+	
+    \smallskip kształt: funkcja Gaussa, \( f_r = 50, g_s = 4\) & 38.95 &
+    \raisebox{-\totalheight}{\scalebox{0.2}{\includegraphics{img/b7.png}}} 
+    
     \\ \hline
     \end{tabular}
 \end{center}
@@ -67,6 +108,13 @@
 
 \section{Wnioski}
 \par
+Porównując wyniki działań filtrów, można stwierdzić, że zachować jaknajwięcej szczegółów a przy tym przeprowadzić jaknajwiększe odszumianie może filtr bilateralny. \\
+
+Odszumić i zachować jaknajwiększe podobieństwo liczbow do obrazu oryginalnego może filtr medianowy. Przydatny jest kiedy potrzebujemy dokładnie zachować kształty i granice.
+\\
+
+Filtr splotowy przydatny jest w przypadku odszumiania gradientów i płynnych przejść.
+
 
 
 
