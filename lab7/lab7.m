@@ -9,7 +9,7 @@ I = splot_filter(IMG, gauss_filter(2));
 s5 = square_error(I, IMG_ORG)
 imwrite(I, 'sprawozdanie/img/s5.png')
 
-I = splot_filter(IMG, gauss_filter(2));
+I = splot_filter(IMG, gauss_filter(3));
 s7 = square_error(I, IMG_ORG)
 imwrite(I, 'sprawozdanie/img/s7.png')
 
