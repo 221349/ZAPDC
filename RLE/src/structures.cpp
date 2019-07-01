@@ -83,17 +83,92 @@ void Encoder<T>::sort(){
   std::sort(map.begin(), map.end());
 }
 
-template class Pattern<uint8_t>;
-template class Pattern<uint16_t>;
-template class Pattern<uint32_t>;
-template class Pattern<uint64_t>;
 
-template class FreqMap<uint8_t>;
-template class FreqMap<uint16_t>;
-template class FreqMap<uint32_t>;
-template class FreqMap<uint64_t>;
+/************************************
+**  FILE:
+************************************/
 
-template class Encoder<uint8_t>;
-template class Encoder<uint16_t>;
-template class Encoder<uint32_t>;
-template class Encoder<uint64_t>;
+File::File(){
+  data_length = 0;
+  data = new char[1];
+  data_space = 1;
+  
+  buf = 0;
+  buf_pos = 0;
+}
+
+
+void File::check_space(){
+  if(data_length < data_space) return;
+  expand();
+}
+
+void File::expand(){
+  data_space *= 2;
+  char * tmp = data;
+  data = new char[data_space];
+  for(uint64_t i = 0; i < data_length; i++){
+    data[i] = tmp[i];
+  }
+  delete[] tmp;
+}
+
+void File::add(const char & value){
+  check_space();
+  data[data_length] = value;
+  data_length++;
+}
+
+void File::write(const char * fname){
+  std::ofstream f (fname,std::ofstream::binary);
+  f.write(data, data_length);  
+  f.close();
+}
+
+template <class T>
+void File::push(const T value){
+  char s;
+  const int block_size = sizeof(value)/sizeof(s);
+  const int r_block_size = sizeof(s) * 8;
+  
+  for(int p = block_size - 1; p >= 0; p--){
+    s = value >> (r_block_size * p);
+    add(s);
+  }
+}
+/*
+void File::push(const uint8_t value, const uint8_t begin, const uint8_t length){
+  const int r_block_size = sizeof(c) * 8;
+  
+  buf = buf | ( (value & (0b11111111 >> begin) >> (r_block_size - )
+  if ( (begin - end) > 
+    
+    char s;
+  
+  for(int p = block_size - 1; p >= 0; p--){
+    s = value >> (r_block_size * p);
+    add(s);
+  }
+}*/
+
+template class codec::Pattern<uint8_t>;
+template class codec::Pattern<uint16_t>;
+template class codec::Pattern<uint32_t>;
+template class codec::Pattern<uint64_t>;
+
+template class codec::FreqMap<uint8_t>;
+template class codec::FreqMap<uint16_t>;
+template class codec::FreqMap<uint32_t>;
+template class codec::FreqMap<uint64_t>;
+
+template class codec::Encoder<uint8_t>;
+template class codec::Encoder<uint16_t>;
+template class codec::Encoder<uint32_t>;
+template class codec::Encoder<uint64_t>;
+
+
+//template class codec::File::push(<bool>);
+template void codec::File::push<uint8_t>(const uint8_t value);
+template void codec::File::push<uint16_t>(const uint16_t value);
+template void codec::File::push<uint32_t>(const uint32_t value);
+template void codec::File::push<uint64_t>(const uint64_t value);

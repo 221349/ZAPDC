@@ -4,6 +4,13 @@
 
 int main(int argc, char *argv[])
 {
+  /*codec::File f;
+  f.push(uint64_t(0b00111010101010));
+  f.push(uint8_t(0b100000000));
+  f.push(uint32_t(0b11110000011001100));
+  f.write(argv[1]);
+  //  std::cout << "0x" << std::setfill('0') << std::setw(8) << std::hex << (0b111 & 0b1);
+    */
   if(argc < 3){
     return 1;
   }

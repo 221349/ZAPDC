@@ -56,7 +56,7 @@ namespace codec
   
   template <class T>
   class Coder{
-    int pattern_size;
+    //int pattern_size;
 
     T * data;
     uint64_t data_length;
@@ -78,7 +78,27 @@ namespace codec
     void encode();
   };
 
+  class File{
+    char buf;
+    uint8_t buf_pos;
+    
+    char * data;
+    uint64_t data_length;
+    uint64_t data_space;
+    
 
+    void check_space();
+    void expand();
+    void add(const char & value);
+    
+    
+  public:    
+    File();
+    template <class T>
+    void push(const T value);
+    //void push(const uint8_t value, const uint8_t begin, const uint8_t end);
+    void write(const char * fname);
+  };
 }
 
 #endif

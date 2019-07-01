@@ -130,7 +130,7 @@ void Coder<T>::encode(){
 
 //template class Pattern<char>;
 //template class FreqMap<char>;
-template class Coder<uint8_t>;
-template class Coder<uint16_t>;
-template class Coder<uint32_t>;
-template class Coder<uint64_t>;
+template class codec::Coder<uint8_t>;
+template class codec::Coder<uint16_t>;
+template class codec::Coder<uint32_t>;
+template class codec:: Coder<uint64_t>;
