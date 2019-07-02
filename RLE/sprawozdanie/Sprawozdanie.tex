@@ -1,0 +1,105 @@
+\documentclass{article}
+\usepackage{a4wide}
+
+
+\usepackage{polski}
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage[margin=1in]{geometry}
+\usepackage[dvipsnames]{xcolor}
+
+
+\author{Lev Sergeyev}
+\title{ZAPDC \\ Ćwiczenie 7 \\ Algorytm RLE}
+
+\date{ }
+\begin{document}
+
+\maketitle
+
+%\pagebreakmovie15
+
+\section{Przebieg ćwiczenia}
+Zaprojektowałem program pozwalający na kompresowanie/dekompresowanie plików binarnych za pomocą algorytmu RLE. \\
+Program pozwala na wybór rozmiaru podstawowego bloku danych, do wyboru 1,2,4 lub 8 bitów (co odpowiada zmiennym typu uint8, uint16, uint32, uint64). \\
+Aby zakodować plik należy uruchomić program z wierszu poleceń z parametrem 'c', 'c1', 'c2', 'c4' lub 'c8' (liczba wskazuje na długość bloku w bajtach) następnie podać nazwę pliku wejściowego i wyjściowego. \\ Proces kompresowania można rozbić na takie etapy:
+\begin{itemize} 
+	\item Wczytanie pliku do kompresji.
+	\item Analiza wczytanych danych:
+	\begin{itemize} 
+		\item tworzenie słownika bloków,
+		\item bloków w słowniku w taki sposów, aby najczęściej wystepowany blok przy kodowaniu był na pierwszym miejscu.
+	\end{itemize}
+	\item Kodowanie danych - przekształcenie na ciąg kodów bloków z liczbą występowania
+	\item Zapis zakodowanych danych do pliku binarnego
+\end{itemize}
+\par
+Skompresowany plik ma następującą strukturę:
+\begin{itemize} 
+	\item Nagłówek wskazujący długość bloku.
+	\item Tablica kodów.
+	\item Ciąg zakodowanej informacji.
+\end{itemize}
+
+\par
+Proces kodowania, w zależności od priorytetu bloku i długości ciagu, może zapisać do pliku wyjściowego dane o róźnym rozmiarze, np blok, który ma największy priorytet występuje w ciągu 4 takich bloków, w pliku wyjściowym będzie mieć zapis \( 0b \textcolor{violet}{10}  \textcolor{OliveGreen}{00 01 00}\) (na fioletowo - bity kodujące numer bloku, zielone bity kodują długość ciagu). \\
+Innym przykładem może służyć blok, o numerze 5, i długością ciągu 205, ponieważ liczba długości nie może być zapisana w 6icu bitach, będzie ona kodowana w inny (dłuższy) sposób :  \( 0b 0001 \textcolor{violet}{0101} ,    0b \textcolor{OliveGreen}{11001101} \) . \\
+Algorytm pozwala na zapis długości ciagu zarówno jak i kodu bloku o maksymalnej długości 32 bity. \\
+\par
+Aby zdekodować plik należy uruchomić program z poleceniem 'd'. Dekodowanie odbywa się w następujący sposów:
+\begin{itemize} 
+	\item Odczyt nagłówku, który zawiera informacje o rozmiarze bloku.
+	\item Odczyt tablicy kodów.
+	\item Odtworzenie danych do tablicy kodów z długością.
+	\item Odtworzenie pliku oryginalnego.
+\end{itemize}
+
+
+\pagebreak
+\section{Kompresja}
+Aby sprawdzić działanie algorytmu na obrazach, skonwertowałem pliki wdo formatu .bmp przedstawiające bitmapy obrazów. Następnie przeprowadziłem kompresowanie dla każdego trybu. \\
+Dodatkowo dołączyłem do porównania plik tekstowy.
+
+\begin{center}
+    \begin{tabular}{ | c |  p{3.4cm}|  p{2cm}| p{2cm} | p{2cm} | p{2cm} |}
+    \hline
+    Plik & Oryginał &  Komprescja c1 &   Komprescja c2 &   Komprescja c4 &   Komprescja c8 \\ \hline
+    
+    \raisebox{-\totalheight}{\scalebox{0.3}{\includegraphics{../Lysy-losowy.png}}} & Lysy-losowy.bmp  284.2 KiB & 424.0 KiB & 342.8 KiB & 268.1 KiB & 234.9 KiB
+    
+     \\ \hline    
+    \raisebox{-\totalheight}{\scalebox{0.3}{\includegraphics{../Lysy-wzorcowy.png}}} & Lysy-wzorcowy.bmp  284.2 KiB & 58.8 KiB & 60.9 KiB & 65.6 KiB & 90.0 KiB 
+    
+     \\ \hline    
+    \raisebox{-\totalheight}{\scalebox{0.06}{\includegraphics{../Troll-face-4-RLE.png}}} & Troll-face-4-RLE.bmp  763.0 KiB & 70.2 KiB & 83.1 KiB & 84.6 KiB & 91.3 KiB
+    
+     \\ \hline    
+    Tekst & Lorem\_ ipsum.txt  143.4 KiB & 215.9 KiB & 190.8 KiB & 137.9 KiB & 127.4 KiB
+    
+    \\ \hline
+    \end{tabular}
+\end{center}
+
+
+
+\subsection{Kod}
+\href{https://github.com/221349/ZAPDC/tree/master/RLE}{https://github.com/221349/ZAPDC/tree/master/RLE}
+
+\section{Wnioski}
+\par
+Algorytm Run-Length Encoding jest jednym z najprostrzych algorytmów kompresji bezstratnej. \\
+\par
+Najlepiej taki algorytm sprawdza się na prostych rysunkach mających duże obszczary tego samego koloru (jak plik "Troll-face-4-RLE.bmp") lub powtarzających się wzorów (jak plik "Lysy-wzorcowy.bmp"). \\
+Kompresja plików o zawartości losowej na odwrót może spowodować zwiększenie pliku, jak w przypadku "Lysy-losowy.bmp". \\
+Kompresja tekstu może dać dobry wynik, ale dla większych bloków danych, od 4 znaków.
+\par
+Wykryte błędy programu: kiedy illość unikalnych bloków danych jest maksymalna (np 256 dla 'c1'), najczęściej w przypadku plików z danymi losowymi, dekompresja kończy się błędem "seg fault". 
+
+
+\end{document}
