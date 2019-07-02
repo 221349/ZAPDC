@@ -1,5 +1,5 @@
 
-NAME=coder.out
+NAME=coder
 
 INCDIR=inc
 OBJDIR=obj

@@ -75,7 +75,7 @@ namespace codec
   public:
     Pattern(const Pattern <T> &pat);
     Pattern(T value);
-    Pattern(T value, uint64_t freq);
+    Pattern(T value, uint32_t freq);
     
     void operator ++(){ ++freq; }
     uint32_t get_freq(){ return freq; }

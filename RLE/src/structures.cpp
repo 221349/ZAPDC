@@ -19,7 +19,7 @@ Pattern<T>::Pattern(T value){
 }
 
 template <class T>
-Pattern<T>::Pattern(T value, uint64_t freq){
+Pattern<T>::Pattern(T value, uint32_t freq){
   this->value = value;
   this->freq = freq;
 }
@@ -159,12 +159,15 @@ void File::push(const T value){
 
 template <class T>
 T File::pick(){
+  if(end()) return 0;
   T buf = 0;
   char s;
   
   const int block_size = sizeof(buf)/sizeof(s);
   const int r_block_size = sizeof(s) * 8;
   
+  //if((data_pos + block_size) >= data_length) return 0;
+      
   for(int p = block_size - 1; p >= 0; p--){
     s = data[data_pos];
     buf = buf | ( uint8_t(s) << (r_block_size * p));
@@ -172,20 +175,7 @@ T File::pick(){
   }
   return buf;
 }
-/*
-void File::push(const uint8_t value, const uint8_t begin, const uint8_t length){
-  const int r_block_size = sizeof(c) * 8;
-  
-  buf = buf | ( (value & (0b11111111 >> begin) >> (r_block_size - )
-  if ( (begin - end) > 
-    
-    char s;
-  
-  for(int p = block_size - 1; p >= 0; p--){
-    s = value >> (r_block_size * p);
-    add(s);
-  }
-}*/
+
 
 template class codec::Pattern<uint8_t>;
 template class codec::Pattern<uint16_t>;

@@ -119,9 +119,6 @@ void Coder<T>::analize(){
     }
   }
   freq_map.sort();
-  freq_map.print(); //????????????????????
-  
-  std::cout << "\n\nn: " << freq_map.get_num(0xa8); //????????????????????
 }
 
 template <class T>
@@ -142,8 +139,6 @@ void Coder<T>::encode(){
       count++;
     }
   }
-  //encode_map.sort();
-  //encode_map.print();
 }
 
 template <class T>
@@ -174,7 +169,6 @@ void Coder<T>::write_code(const char * fname){
   for (auto block: encode_map.map) {
     l = block.get_freq();
     n = freq_map.get_num(block.get_value());
-    //std::cout << "\n l: " << l;
     
     if((n == 0) && (l <= SIZE6)){
       out.push( uint8_t ((S0 << 6) | (l-1) ));
@@ -218,7 +212,6 @@ void Coder<T>::write_code(const char * fname){
           out.push(uint8_t(n));
           out.push(uint32_t(l-1));
       }
-      else std::cout << "\n 8aaaa!";
     }
     
     else if (n < SIZE16){
@@ -237,7 +230,6 @@ void Coder<T>::write_code(const char * fname){
           out.push(uint16_t(n));
           out.push(uint32_t(l-1));
       }
-      else std::cout << "\n 16aaaa!";
     }
     
     else if (n < SIZE32){
@@ -256,12 +248,9 @@ void Coder<T>::write_code(const char * fname){
           out.push(uint32_t(n));
           out.push(uint32_t(l-1));
       }
-      else std::cout << "\n 32aaaa!";
     }
-    else std::cout << "\n aaaa!";
   }
   out.write(fname);
-  std::cerr << "\nHERE\n";
 }
 
 template <class T>
@@ -278,8 +267,6 @@ void Coder<T>::read_code(const char * fname){
     freq_map.add(buf);
     buf_t = buf;
     buf = in.pick<T>();
-    std::cout << "0x" << std::setfill('0') << std::setw(8) << std::hex
-      << (uint64_t) buf << "\n";
   }
   for(buf = in.pick<uint8_t>(); !in.end(); buf = in.pick<uint8_t>()){
     if(cut(buf,0,6) == S0){
@@ -323,7 +310,6 @@ void Coder<T>::read_code(const char * fname){
         uint32_t l = in.pick<uint32_t>();
         encode_map.add(freq_map.get_val(i), l + 1);
       }
-      else std::cout << "\n 8aaaa!";
     }
     
     else if(cut(buf,4,2) == EX_2I){
@@ -340,7 +326,6 @@ void Coder<T>::read_code(const char * fname){
         uint32_t l = in.pick<uint32_t>();
         encode_map.add(freq_map.get_val(i), l + 1);
       }
-      else std::cout << "\n 16aaaa!";
     }
     
     else if(cut(buf,4,2) == EX_4I){
@@ -357,15 +342,11 @@ void Coder<T>::read_code(const char * fname){
         uint32_t l = in.pick<uint32_t>();
         encode_map.add(freq_map.get_val(i), l + 1);
       }
-      else std::cout << "\n 32aaaa!";
     }
-    else std::cout << "\n aaaa!";
   }
   
 }
 
-//template class Pattern<char>;
-//template class FreqMap<char>;
 template class codec::Coder<uint8_t>;
 template class codec::Coder<uint16_t>;
 template class codec::Coder<uint32_t>;
