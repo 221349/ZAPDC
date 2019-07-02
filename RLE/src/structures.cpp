@@ -56,6 +56,16 @@ void FreqMap<T>::sort(){
   std::sort(map.begin(), map.end());
 }
 
+template <class T>
+uint32_t FreqMap<T>::get_num(const T & value){
+  auto cell = std::find(map.begin(), map.end(), Pattern<T>(value));
+  return (uint32_t)(cell - map.begin());
+}
+
+template <class T>
+T FreqMap<T>::get_val(const uint32_t num){
+  return map[num].get_value();
+}
 
 
 
@@ -74,7 +84,7 @@ void Encoder<T>::print(){
 }
 
 template <class T>
-void Encoder<T>::add(T & in, uint64_t count){
+void Encoder<T>::add(const T & in, uint64_t count){
   map.push_back(Pattern<T>(in, count));
 }
 
@@ -93,8 +103,7 @@ File::File(){
   data = new char[1];
   data_space = 1;
   
-  buf = 0;
-  buf_pos = 0;
+  data_pos = 0;
 }
 
 
@@ -123,6 +132,17 @@ void File::write(const char * fname){
   std::ofstream f (fname,std::ofstream::binary);
   f.write(data, data_length);  
   f.close();
+  data_pos = 0;
+}
+
+void File::read(const char * fname){
+  std::ifstream f(fname, std::ios::binary | std::ios::in);
+  char c;
+  while (f.get(c))
+  {
+    add(c);
+  }
+  f.close();
 }
 
 template <class T>
@@ -135,6 +155,22 @@ void File::push(const T value){
     s = value >> (r_block_size * p);
     add(s);
   }
+}
+
+template <class T>
+T File::pick(){
+  T buf = 0;
+  char s;
+  
+  const int block_size = sizeof(buf)/sizeof(s);
+  const int r_block_size = sizeof(s) * 8;
+  
+  for(int p = block_size - 1; p >= 0; p--){
+    s = data[data_pos];
+    buf = buf | ( uint8_t(s) << (r_block_size * p));
+    data_pos++;
+  }
+  return buf;
 }
 /*
 void File::push(const uint8_t value, const uint8_t begin, const uint8_t length){
@@ -172,3 +208,8 @@ template void codec::File::push<uint8_t>(const uint8_t value);
 template void codec::File::push<uint16_t>(const uint16_t value);
 template void codec::File::push<uint32_t>(const uint32_t value);
 template void codec::File::push<uint64_t>(const uint64_t value);
+
+template uint8_t codec::File::pick<uint8_t>();
+template uint16_t codec::File::pick<uint16_t>();
+template uint32_t codec::File::pick<uint32_t>();
+template uint64_t codec::File::pick<uint64_t>();
