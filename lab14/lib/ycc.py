@@ -16,17 +16,45 @@ class BT_709:
 def matrix_RGB2YCC(c):
     cr_c = -1/(2 * (1 - c.Kr))
     cb_c = -1/(2 * (1 - c.Kb))
+    g_c = (1 - c.Kr - c.Kb)
     return [
-        [c.Kr,              (1 - c.Kr - c.Kb),         c.Kb],
-        [cb_c*c.Kr,         cb_c*(1 - c.Kr - c.Kb),    cb_c*(c.Kb - 1)],
-        [cr_c*(c.Kr - 1),   cr_c*(1 - c.Kr - c.Kb),    cr_c*c.Kb]
+        [c.Kr,              g_c,         c.Kb],
+        [cb_c*c.Kr,         cb_c*g_c,    cb_c*(c.Kb - 1)],
+        [cr_c*(c.Kr - 1),   cr_c*g_c,    cr_c*c.Kb]
         ]
+
+def matrix_YCC2RGB(c):
+    X = -1/(2 * (1 - c.Kr))
+    T = -1/(2 * (1 - c.Kb))
+    R = c.Kr
+    G = (1 - c.Kr - c.Kb)
+    B = c.Kb
+
+    L = T*X*R*G - T*X*G*(R+B-1) + T*X*G*B
+    M = np.array([
+        [T*X*G,        0,      -T*G],
+        [T*X*(R+B-1),  X*B,    T*R],
+        [T*X*G,        X*G,    0]
+        ])
+    return M/L
+
 
 def rgb2ycc(img, conversion):
     if(conversion == 'BT_709'):
         m = matrix_RGB2YCC(BT_709)
     else:
         m = matrix_RGB2YCC(BT_601)
+    return convert(img, m)
+
+def ycc2rgb(img, conversion):
+    if(conversion == 'BT_709'):
+        m = np.linalg.inv(matrix_RGB2YCC(BT_709))
+    else:
+        m = np.linalg.inv(matrix_RGB2YCC(BT_601))
+    return convert(img, m)
+
+
+def convert(img, m):
     img_lx = len(img[0])
     img_ly = len(img)
     out = np.zeros((img_ly, img_lx, 3), 'float')
